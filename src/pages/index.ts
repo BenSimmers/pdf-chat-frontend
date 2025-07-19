@@ -1,1 +1,3 @@
-export { default as UploadPage } from "./UploadPage";
+export * from "./HomePage";
+export * from "./UploadPage";
+export * from "./ChatPage";

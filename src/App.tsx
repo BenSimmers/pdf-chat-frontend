@@ -8,28 +8,31 @@ import {
 import React from "react";
 
 import { Provider } from "react-redux";
-import { UploadPage } from "./pages";
+import ChatPage from "./pages/ChatPage";
 
 import { Navigation, Paths } from "./components/navigation";
 import { HomePage } from "./pages/HomePage";
 import { useAuth } from "./lib/auth/hooks/useAuth";
+import UploadPage from "./pages/UploadPage";
 
-export type InferProps<T> = T extends JSXElementConstructor<infer P> ? P : never;
+export type InferProps<T> =
+    T extends JSXElementConstructor<infer P> ? P : never;
 
-export type ProviderWithProps<T extends JSXElementConstructor<React.ElementType>> = [
-    T,
-    Omit<ComponentProps<T>, "children"> & { children?: ReactNode },
-];
+export type ProviderWithProps<
+    T extends JSXElementConstructor<React.ElementType>,
+> = [T, Omit<ComponentProps<T>, "children"> & { children?: ReactNode }];
 
 export type InferProviderArray<
     T extends ReadonlyArray<JSXElementConstructor<React.ElementType>>,
 > = {
-        [K in keyof T]: T[K] extends JSXElementConstructor<React.ElementType>
+    [K in keyof T]: T[K] extends JSXElementConstructor<React.ElementType>
         ? ProviderWithProps<T[K]>
         : never;
-    };
+};
 
-export type ProvidersProps<T extends JSXElementConstructor<React.ElementType>[]> = {
+export type ProvidersProps<
+    T extends JSXElementConstructor<React.ElementType>[],
+> = {
     children: ReactNode;
     providers: InferProviderArray<T>;
 };
@@ -41,25 +44,27 @@ const typeSafeReactCreateElement = <T extends JSXElementConstructor<unknown>>(
 ) => React.createElement(Component, props, children);
 
 const ProviderStack = memo(
-    <T extends JSXElementConstructor<unknown>[]>({
-        providers,
-        children,
-    }: ProvidersProps<T>): JSX.Element =>
-        providers.reduceRight(
-            (node, [Provider, props]) =>
-                typeSafeReactCreateElement(Provider, props, node),
+    <T extends JSXElementConstructor<unknown>[]>(props: ProvidersProps<T>) => {
+        const { providers, children } = props;
+        return providers.reduceRight(
+            (node, [Provider, providerProps]) =>
+                typeSafeReactCreateElement(Provider, providerProps, node),
             <>{children}</>,
-        ),
+        );
+    },
 );
+ProviderStack.displayName = "ProviderStack";
 
 export const Providers = memo(
     <T extends JSXElementConstructor<unknown>[]>({
         children,
         providers,
     }: ProvidersProps<T>): JSX.Element => (
-        <ProviderStack providers={providers} children={children} />
+        <ProviderStack providers={providers}>{children}</ProviderStack>
     ),
 );
+
+Providers.displayName = "Providers";
 
 const paths: Array<{ path: string; element: JSX.Element }> = [
     {
@@ -72,7 +77,11 @@ const paths: Array<{ path: string; element: JSX.Element }> = [
     },
     {
         path: "/chat/:documentId",
-        element: <>Chat page</>, // Assuming this is a placeholder, replace with actual chat component
+        element: <ChatPage />,
+    },
+    {
+        path: "/chat",
+        element: <ChatPage />,
     },
     {
         path: "*",

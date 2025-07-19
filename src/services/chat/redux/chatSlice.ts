@@ -1,18 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Status } from "../../../lib/constants/status";
-
-export type ChatMessage = { role: string; content: string; created_at?: string };
-
-type SendMessagePayload = {
-    documentId: number;
-    question: string;
-    token: string;
-};
-
-type FetchHistoryPayload = {
-    documentId: number;
-    token: string;
-};
+import { ChatMessage } from "../models";
+import { fetchChatHistory, sendChatMessage } from "./thunks";
 
 interface ChatState {
     messagesByDocId: Record<number, ChatMessage[]>;
@@ -26,50 +15,14 @@ const initialState: ChatState = {
     error: null,
 };
 
-export const fetchChatHistory = createAsyncThunk<
-    { documentId: number; messages: ChatMessage[] },
-    FetchHistoryPayload,
-    { rejectValue: string }
->("chat/fetchHistory", async ({ documentId, token }, { rejectWithValue }) => {
-    try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/pdfs/${documentId}/chat-history`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Failed to fetch chat history");
-        const data = await res.json();
-        return { documentId, messages: data.messages };
-    } catch {
-        return rejectWithValue("Could not load chat history");
-    }
-});
-
-export const sendChatMessage = createAsyncThunk<
-    { documentId: number; assistantMessage: ChatMessage },
-    SendMessagePayload,
-    { rejectValue: string }
->("chat/sendMessage", async ({ documentId, question, token }, { rejectWithValue }) => {
-    try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/pdfs/${documentId}/chat`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ question }),
-        });
-        const data = await res.json();
-        const assistantMessage: ChatMessage = { role: "assistant", content: data.answer };
-        return { documentId, assistantMessage };
-    } catch {
-        return rejectWithValue("Failed to send message");
-    }
-});
-
 const chatSlice = createSlice({
     name: "chat",
     initialState,
     reducers: {
-        addUserMessage: (state, action: { payload: { documentId: number; message: ChatMessage } }) => {
+        addUserMessage: (
+            state,
+            action: { payload: { documentId: number; message: ChatMessage } },
+        ) => {
             const { documentId, message } = action.payload;
             const thread = state.messagesByDocId[documentId] ?? [];
             state.messagesByDocId[documentId] = [...thread, message];
@@ -83,7 +36,8 @@ const chatSlice = createSlice({
             })
             .addCase(fetchChatHistory.fulfilled, (state, action) => {
                 state.status = Status.SUCCESS;
-                state.messagesByDocId[action.payload.documentId] = action.payload.messages;
+                state.messagesByDocId[action.payload.documentId] =
+                    action.payload.messages;
             })
             .addCase(fetchChatHistory.rejected, (state, action) => {
                 state.status = Status.ERROR;
@@ -97,7 +51,10 @@ const chatSlice = createSlice({
             .addCase(sendChatMessage.fulfilled, (state, action) => {
                 const { documentId, assistantMessage } = action.payload;
                 const thread = state.messagesByDocId[documentId] ?? [];
-                state.messagesByDocId[documentId] = [...thread, assistantMessage];
+                state.messagesByDocId[documentId] = [
+                    ...thread,
+                    assistantMessage,
+                ];
                 state.status = Status.SUCCESS;
             })
             .addCase(sendChatMessage.rejected, (state, action) => {

@@ -14,8 +14,8 @@ export const useAuth = () => {
                 const token = await getAccessTokenSilently({
                     authorizationParams: {
                         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-                        scope: 'openid profile email offline_access'
-                    }
+                        scope: "openid profile email offline_access",
+                    },
                 });
                 dispatch(setToken(token));
             } catch (error) {
@@ -23,6 +23,5 @@ export const useAuth = () => {
             }
         };
         initializeAuth();
-    }
-        , [getAccessTokenSilently, dispatch]);
+    }, [getAccessTokenSilently, dispatch]);
 };

@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../lib/store";
 import { useDispatch } from "react-redux";
-import { fetchPDFs } from "../redux/pdfSlice";
 import { Status } from "../../../lib/constants";
+import { fetchPDFs } from "../redux/thunks";
 
 export const usePdfs = () => {
     const dispatch = useDispatch<AppDispatch>();

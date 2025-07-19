@@ -1,16 +1,14 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../lib/store";
-import { fetchPDFs, uploadPDF as uploadPDFAction } from "../redux/pdfSlice";
+import { fetchPDFs, uploadPDF as uploadPDFAction } from "../redux/thunks";
 
 export const usePDF = () => {
     const dispatch = useDispatch<AppDispatch>();
     const token = useSelector((state: RootState) => state.auth.token);
-    const {
-        pdfs,
-        status,
-        error,
-    } = useSelector((state: RootState) => state.pdf);
+    const { pdfs, status, error } = useSelector(
+        (state: RootState) => state.pdf,
+    );
 
     const uploadPDF = React.useCallback(
         async (file: File) => {
@@ -22,7 +20,7 @@ export const usePDF = () => {
                 console.error("Failed to upload PDF:", err);
             }
         },
-        [dispatch, token]
+        [dispatch, token],
     );
 
     React.useEffect(() => {
@@ -32,8 +30,6 @@ export const usePDF = () => {
         };
         fetchData();
     }, [dispatch, token]);
-
-
 
     return {
         pdfs,

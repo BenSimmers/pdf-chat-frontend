@@ -5,7 +5,7 @@ import authSlice from "../../lib/auth/redux/authSlice";
 const reducers = {
     pdf: pdfSlice,
     chat: chatSlice,
-    auth: authSlice
+    auth: authSlice,
 };
 
 export const store = configureStore({

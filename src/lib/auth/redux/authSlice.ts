@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 type AuthState = {
     token: string | null;
-}
+};
 
 const initialState: AuthState = {
     token: null,

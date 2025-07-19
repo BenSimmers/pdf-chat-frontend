@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import React, { JSX } from "react";
 import { Route, Routes } from "react-router-dom";
 
 type PathProps = Array<{
