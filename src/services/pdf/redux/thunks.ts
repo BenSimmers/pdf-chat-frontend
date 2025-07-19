@@ -12,9 +12,10 @@ export const uploadPDF = createAsyncThunk<
     { rejectValue: string }
 >("pdf/upload", async ({ file, token }, { rejectWithValue }) => {
     try {
+        const apiURL = import.meta.env.VITE_API_URL;
         const formData = new FormData();
         formData.append("file", file);
-        const response = await fetch("http://localhost:3001/api/upload", {
+        const response = await fetch(`${apiURL}/upload`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -45,7 +46,8 @@ export const fetchPDFs = createAsyncThunk<
     { rejectValue: string }
 >("pdf/fetchList", async ({ token }, { rejectWithValue }) => {
     try {
-        const res = await fetch("http://localhost:3001/api/pdfs", {
+        const apiURL = import.meta.env.VITE_API_URL;
+        const res = await fetch(`${apiURL}/pdfs`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch PDFs");

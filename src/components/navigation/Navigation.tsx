@@ -59,7 +59,8 @@ export const Navigation: React.FunctionComponent = () => {
                     onClick={() =>
                         loginWithRedirect({
                             authorizationParams: {
-                                audience: "http://localhost:3001/api",
+                                // audience: process.env.VITE_AUTH0_AUDIENCE,
+                                audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                                 scope: "openid profile email offline_access",
                                 prompt: "consent" as const,
                             },
