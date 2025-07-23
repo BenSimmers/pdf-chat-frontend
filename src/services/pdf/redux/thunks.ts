@@ -57,3 +57,26 @@ export const fetchPDFs = createAsyncThunk<
         return rejectWithValue("Could not load PDFs");
     }
 });
+
+export const deletePDF = createAsyncThunk<
+    { pdfId: string },
+    { pdfId: string; token: string },
+    { rejectValue: string }
+>("pdf/delete", async ({ pdfId, token }, { rejectWithValue }) => {
+    try {
+        const apiURL = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiURL}/pdfs/${pdfId}/delete`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (!response.ok) throw new Error("Failed to delete PDF");
+        return { pdfId };
+    } catch (e) {
+        if (e instanceof Error) {
+            return rejectWithValue(e.message);
+        }
+        return rejectWithValue("An unknown error occurred");
+    }
+});
