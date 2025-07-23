@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * SearchInput component for filtering PDFs in the chat sidebar.

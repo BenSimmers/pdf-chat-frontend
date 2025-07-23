@@ -59,7 +59,9 @@ const pdfSlice = createSlice({
             })
             .addCase(deletePDF.fulfilled, (state, action) => {
                 state.status = Status.SUCCESS;
-                state.pdfs = state.pdfs.filter(pdf => pdf.id !== action.payload.pdfId);
+                state.pdfs = state.pdfs.filter(
+                    (pdf) => pdf.id !== action.payload.pdfId,
+                );
             })
             .addCase(deletePDF.rejected, (state, action) => {
                 state.status = Status.ERROR;

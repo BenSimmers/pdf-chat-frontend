@@ -22,14 +22,12 @@ const ChatPage = () => {
     const { deletePDF } = usePDF();
     const scrollRef = React.useRef<HTMLDivElement>(null);
 
-
     const { picture, given_name } = user || { picture: "", given_name: "" };
     const { messages, sendMessage, loadHistory, status } = useChat(docId ?? 0);
 
     useEffect(() => {
         if (docId) loadHistory();
     }, [docId, loadHistory]);
-
 
     useEffect(() => {
         if (scrollRef.current)
@@ -49,7 +47,6 @@ const ChatPage = () => {
                         deletePDF(pdfId);
                     },
                 }}
-
             />
             <div className='flex-1 flex flex-col'>
                 <Breadcrumbs />
@@ -109,7 +106,7 @@ const ChatPage = () => {
                     ) : (
                         <div className='flex items-center justify-center h-full'>
                             {pdfs.length === 0 ? (
-                                <div className="text-center flex flex-col items-center">
+                                <div className='text-center flex flex-col items-center'>
                                     <p className='text-gray-500'>
                                         Doesn&apos;t look like you&apos;ve got
                                         any PDFs uploaded.

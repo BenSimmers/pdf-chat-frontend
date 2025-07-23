@@ -1,7 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../lib/store";
-import { fetchPDFs, uploadPDF as uploadPDFAction, deletePDF as deletePDFAction } from "../redux/thunks";
+import {
+    fetchPDFs,
+    uploadPDF as uploadPDFAction,
+    deletePDF as deletePDFAction,
+} from "../redux/thunks";
 
 export const usePDF = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +38,6 @@ export const usePDF = () => {
         },
         [dispatch, token],
     );
-
 
     React.useEffect(() => {
         const fetchData = async () => {

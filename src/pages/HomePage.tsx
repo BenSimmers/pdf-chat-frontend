@@ -3,7 +3,6 @@ import { usePdfs } from "../services/pdf/hooks/usePdfs";
 import { useNavigate } from "react-router-dom";
 import { usePDF } from "../services/pdf/hooks/usePDF";
 
-
 type CardProps = {
     pdf: {
         id: string;
@@ -13,7 +12,11 @@ type CardProps = {
     onSelect: (pdfId: string) => void;
 };
 
-const Card: React.FunctionComponent<CardProps> = ({ pdf, onDelete, onSelect }) => (
+const Card: React.FunctionComponent<CardProps> = ({
+    pdf,
+    onDelete,
+    onSelect,
+}) => (
     <div className='bg-white shadow hover:shadow-lg transition-shadow cursor-pointer p-4 w-3xs h-3xs rounded-lg hover:bg-gray-50 flex flex-col justify-between'>
         <div>
             <h2 className='text-lg font-semibold'>{pdf.name}</h2>
