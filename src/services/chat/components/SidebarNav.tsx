@@ -3,6 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { PDF } from "../../pdf/models";
 import { DotsVerticalIcon } from "../../../components/icons/VerticalDots";
 
+export type Actions = {
+    delete?: (pdfId: string) => void;
+}
+
 type SidebarNavProps = {
     pdfs: PDF[];
     collapsed: boolean;
@@ -11,9 +15,8 @@ type SidebarNavProps = {
     dropdownRef: React.RefObject<HTMLDivElement>;
     setHoveredId: (id: string | null) => void;
     setOpenMenuId: (id: string | null) => void;
-    actions: {
-        delete?: (pdfId: string) => void;
-    };
+    actions: Actions;
+    navigate: ReturnType<typeof useNavigate>;
 };
 
 export const SidebarNav: React.FunctionComponent<SidebarNavProps> = ({
@@ -25,9 +28,9 @@ export const SidebarNav: React.FunctionComponent<SidebarNavProps> = ({
     setHoveredId,
     setOpenMenuId,
     actions,
+    navigate,
 }) => {
-    const navigate = useNavigate();
-
+    // const navigate = useNavigate();
     return (
         <nav>
             {pdfs.map((pdf) => (
@@ -42,9 +45,8 @@ export const SidebarNav: React.FunctionComponent<SidebarNavProps> = ({
                         className='flex-1 text-gray-600 hover:text-gray-700'
                     >
                         <span
-                            className={`transition-opacity duration-300 ${
-                                collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                            className={`transition-opacity duration-300 ${collapsed ? "opacity-0" : "opacity-100"
+                                }`}
                         >
                             {pdf.name.length > 20
                                 ? `${pdf.name.slice(0, 20)}…`
@@ -54,18 +56,18 @@ export const SidebarNav: React.FunctionComponent<SidebarNavProps> = ({
 
                     {(!collapsed &&
                         (hoveredId === pdf.id || openMenuId === pdf.id)) && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setOpenMenuId(
-                                    openMenuId === pdf.id ? null : pdf.id,
-                                );
-                            }}
-                            className='p-1 rounded hover:bg-gray-200'
-                        >
-                            <DotsVerticalIcon className='w-5 h-5 text-gray-500' />
-                        </button>
-                    )}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenMenuId(
+                                        openMenuId === pdf.id ? null : pdf.id,
+                                    );
+                                }}
+                                className='p-1 rounded hover:bg-gray-200'
+                            >
+                                <DotsVerticalIcon className='w-5 h-5 text-gray-500' />
+                            </button>
+                        )}
 
                     {openMenuId === pdf.id && !collapsed && (
                         <div

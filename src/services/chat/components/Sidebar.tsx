@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDetectClickOutside } from "../../../lib/hooks/useDetectClickOutside";
 import { SearchInput } from "./SearchInput";
 import { SidebarHeader } from "./SidebarHeader";
-import { SidebarNav } from "./SidebarNav";
+import { Actions, SidebarNav } from "./SidebarNav";
 import { SidebarFooter } from "./SidebarFooter";
 
 export type ChatProps = {
@@ -13,9 +13,7 @@ export type ChatProps = {
     picture: string;
     search: string;
     setSearch: (search: string) => void;
-    actions?: {
-        delete?: (pdfId: string) => void;
-    };
+    actions: Actions
 };
 
 export const ChatSideBar: React.FC<ChatProps> = ({
@@ -39,13 +37,15 @@ export const ChatSideBar: React.FC<ChatProps> = ({
         },
     );
 
-    const toggleCollapse = () => {
-        setCollapsed(!collapsed);
-    };
+    const toggleCollapse = React.useCallback(() => {
+        setCollapsed((prev) => !prev);
+    }, []);
 
-    const filteredPdfs = pdfs.filter((pdf) =>
-        pdf.name.toLowerCase().includes(search.toLowerCase()),
-    );
+    const filteredPdfs = React.useMemo(() => {
+        return pdfs.filter((pdf) =>
+            pdf.name.toLowerCase().includes(search.toLowerCase()),
+        );
+    }, [pdfs, search]);
 
     return (
         <aside
@@ -69,6 +69,7 @@ export const ChatSideBar: React.FC<ChatProps> = ({
                     setHoveredId={setHoveredId}
                     setOpenMenuId={setOpenMenuId}
                     actions={actions}
+                    navigate={navigate}
                 />
 
                 {filteredPdfs.length === 0 && (
