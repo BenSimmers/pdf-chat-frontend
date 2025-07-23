@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../lib/store";
-import { fetchPDFs, uploadPDF as uploadPDFAction } from "../redux/thunks";
+import { fetchPDFs, uploadPDF as uploadPDFAction, deletePDF as deletePDFAction } from "../redux/thunks";
 
 export const usePDF = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +23,19 @@ export const usePDF = () => {
         [dispatch, token],
     );
 
+    const deletePDF = React.useCallback(
+        async (pdfId: string) => {
+            try {
+                if (!token) return;
+                await dispatch(deletePDFAction({ pdfId, token }));
+            } catch (err) {
+                console.error("Failed to delete PDF:", err);
+            }
+        },
+        [dispatch, token],
+    );
+
+
     React.useEffect(() => {
         const fetchData = async () => {
             if (!token) return;
@@ -36,5 +49,6 @@ export const usePDF = () => {
         loading: status === "loading",
         error,
         uploadPDF,
+        deletePDF,
     };
 };

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { PDF } from "../models/types";
 import { Status } from "../../../lib/constants/status";
 import { RootState } from "../../../lib/store";
-import { fetchPDFs, uploadPDF } from "./thunks";
+import { fetchPDFs, uploadPDF, deletePDF } from "./thunks";
 
 interface PDFState {
     pdfs: PDF[];
@@ -52,6 +52,18 @@ const pdfSlice = createSlice({
             .addCase(fetchPDFs.rejected, (state, action) => {
                 state.status = Status.ERROR;
                 state.error = action.payload ?? "Failed to fetch PDFs";
+            })
+            .addCase(deletePDF.pending, (state) => {
+                state.status = Status.LOADING;
+                state.error = null;
+            })
+            .addCase(deletePDF.fulfilled, (state, action) => {
+                state.status = Status.SUCCESS;
+                state.pdfs = state.pdfs.filter(pdf => pdf.id !== action.payload.pdfId);
+            })
+            .addCase(deletePDF.rejected, (state, action) => {
+                state.status = Status.ERROR;
+                state.error = action.payload ?? "Failed to delete PDF";
             });
     },
 });
