@@ -16,6 +16,7 @@
         "@auth0/auth0-react": "^2.3.0",
         "@reduxjs/toolkit": "^2.6.1",
         "@tailwindcss/vite": "^4.1.11",
+        "heroicons": "^2.2.0",
         "i18next": "^24.2.3",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",

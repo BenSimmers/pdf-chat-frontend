@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 export const Navigation: React.FunctionComponent = () => {
     const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -78,9 +78,10 @@ export const Navigation: React.FunctionComponent = () => {
         <nav className='bg-gray-800'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                 <div className='flex items-center justify-between h-16'>
-                    <div className='text-white font-bold text-xl'>
+
+                    <Link to='/' className='text-white font-bold text-xl'>
                         Paper Pilot
-                    </div>
+                    </Link>
 
                     <button
                         className='sm:hidden p-2 rounded text-gray-300 hover:text-white hover:bg-gray-700'

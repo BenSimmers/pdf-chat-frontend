@@ -7,7 +7,7 @@ export const Breadcrumbs: React.FunctionComponent = () => {
     const parts = pathname.split("/").filter((part) => part);
 
     return (
-        <div className='bg-gray-100 p-4'>
+        <div className='p-4'>
             <nav className='flex items-center space-x-2'>
                 <Link to='/' className='text-blue-500 hover:underline'>
                     Home
