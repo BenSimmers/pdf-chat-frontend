@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useChat } from "../services/chat/hooks/useChat";
 import { Breadcrumbs } from "../components/breadcrumbs/Breadcrumbs";
-import { ChatSideBar } from "../services/chat/component/Chat";
+import { ChatSideBar } from "../services/chat/components/Sidebar";
 import { usePdfs } from "../services/pdf/hooks/usePdfs";
 import { useAuth0 } from "@auth0/auth0-react";
+import { usePDF } from "../services/pdf/hooks/usePDF";
+import TypingIndicator from "../components/icons/TypingIndicator";
 
 type Params = {
     documentId?: string;
@@ -17,15 +19,17 @@ const ChatPage = () => {
     const docId = Number(documentId);
     const { pdfs, loading: pdfsLoading } = usePdfs();
     const { user } = useAuth0();
+    const { deletePDF } = usePDF();
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
 
     const { picture, given_name } = user || { picture: "", given_name: "" };
-    const { messages, sendMessage, loadHistory } = useChat(docId ?? 0);
+    const { messages, sendMessage, loadHistory, status } = useChat(docId ?? 0);
 
     useEffect(() => {
         if (docId) loadHistory();
     }, [docId, loadHistory]);
 
-    const scrollRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (scrollRef.current)
@@ -40,6 +44,12 @@ const ChatPage = () => {
                 picture={picture ?? ""}
                 search={searchQuery}
                 setSearch={setSearchQuery}
+                actions={{
+                    delete: (pdfId: string) => {
+                        deletePDF(pdfId);
+                    },
+                }}
+
             />
             <div className='flex-1 flex flex-col'>
                 <Breadcrumbs />
@@ -62,6 +72,11 @@ const ChatPage = () => {
                                         <div ref={scrollRef} />
                                     </div>
                                 ))}
+                                {status === "loading" && (
+                                    <div className='text-left'>
+                                        <TypingIndicator />
+                                    </div>
+                                )}
                             </div>
 
                             <form
@@ -94,7 +109,7 @@ const ChatPage = () => {
                     ) : (
                         <div className='flex items-center justify-center h-full'>
                             {pdfs.length === 0 ? (
-                                <>
+                                <div className="text-center flex flex-col items-center">
                                     <p className='text-gray-500'>
                                         Doesn&apos;t look like you&apos;ve got
                                         any PDFs uploaded.
@@ -107,7 +122,7 @@ const ChatPage = () => {
                                     >
                                         Upload a PDF
                                     </button>
-                                </>
+                                </div>
                             ) : (
                                 <p className='text-gray-500'>
                                     Select a PDF from the sidebar to start
